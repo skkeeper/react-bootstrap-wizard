@@ -10,13 +10,16 @@ import {
   NavLink,
   TabContent,
   TabPane,
-  Button
+  Button,
 } from "reactstrap";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
 const isForwardRefComponent = (component) => {
-  return typeof component === 'object' && component['$$typeof'] === Symbol.for('react.forward_ref')
+  return (
+    typeof component === "object" &&
+    component["$$typeof"] === Symbol.for("react.forward_ref")
+  );
 };
 
 class ReactWizard extends React.Component {
@@ -51,11 +54,11 @@ class ReactWizard extends React.Component {
       wizardData:
         this.props.wizardData !== undefined ? this.props.wizardData : {},
       movingTabStyle: {
-        transition: "transform 0s"
+        transition: "transform 0s",
       },
       progressbarStyle: {
-        width: 100 / this.props.steps.length / 2 + "%"
-      }
+        width: 100 / this.props.steps.length / 2 + "%",
+      },
     };
     this.navigationStepChange = this.navigationStepChange.bind(this);
     this.refreshAnimation = this.refreshAnimation.bind(this);
@@ -86,7 +89,8 @@ class ReactWizard extends React.Component {
         for (var i = this.state.currentStep; i < key; i++) {
           if (
             this.refs[this.props.steps[i].stepName].isValidated !== undefined &&
-            await this.refs[this.props.steps[i].stepName].isValidated() === false
+            (await this.refs[this.props.steps[i].stepName].isValidated()) ===
+              false
           ) {
             validationState = false;
             break;
@@ -99,14 +103,14 @@ class ReactWizard extends React.Component {
             ...this.state.wizardData,
             [this.props.steps[this.state.currentStep].stepName]: this.refs[
               this.props.steps[this.state.currentStep].stepName
-            ].state
+            ].state,
           },
           currentStep: key,
           highestStep:
             key > this.state.highestStep ? key : this.state.highestStep,
           nextButton: this.props.steps.length > key + 1 ? true : false,
           previousButton: key > 0 ? true : false,
-          finishButton: this.props.steps.length === key + 1 ? true : false
+          finishButton: this.props.steps.length === key + 1 ? true : false,
         });
         this.refreshAnimation(key);
       }
@@ -117,9 +121,9 @@ class ReactWizard extends React.Component {
       (this.props.validate &&
         ((this.refs[this.props.steps[this.state.currentStep].stepName]
           .isValidated !== undefined &&
-          await this.refs[
+          (await this.refs[
             this.props.steps[this.state.currentStep].stepName
-          ].isValidated()) ||
+          ].isValidated())) ||
           this.refs[this.props.steps[this.state.currentStep].stepName]
             .isValidated === undefined)) ||
       this.props.validate === undefined ||
@@ -131,14 +135,14 @@ class ReactWizard extends React.Component {
           ...this.state.wizardData,
           [this.props.steps[this.state.currentStep].stepName]: this.refs[
             this.props.steps[this.state.currentStep].stepName
-          ].state
+          ].state,
         },
         currentStep: key,
         highestStep:
           key > this.state.highestStep ? key : this.state.highestStep,
         nextButton: this.props.steps.length > key + 1 ? true : false,
         previousButton: key > 0 ? true : false,
-        finishButton: this.props.steps.length === key + 1 ? true : false
+        finishButton: this.props.steps.length === key + 1 ? true : false,
       });
       this.refreshAnimation(key);
     }
@@ -151,14 +155,14 @@ class ReactWizard extends React.Component {
           ...this.state.wizardData,
           [this.props.steps[this.state.currentStep].stepName]: this.refs[
             this.props.steps[this.state.currentStep].stepName
-          ].state
+          ].state,
         },
         currentStep: key,
         highestStep:
           key > this.state.highestStep ? key : this.state.highestStep,
         nextButton: this.props.steps.length > key + 1 ? true : false,
         previousButton: key > 0 ? true : false,
-        finishButton: this.props.steps.length === key + 1 ? true : false
+        finishButton: this.props.steps.length === key + 1 ? true : false,
       });
       this.refreshAnimation(key);
     }
@@ -170,9 +174,9 @@ class ReactWizard extends React.Component {
       (this.props.validate &&
         ((this.refs[this.props.steps[this.state.currentStep].stepName]
           .isValidated !== undefined &&
-          await this.refs[
+          (await this.refs[
             this.props.steps[this.state.currentStep].stepName
-          ].isValidated()) ||
+          ].isValidated())) ||
           this.refs[this.props.steps[this.state.currentStep].stepName]
             .isValidated === undefined) &&
         this.props.finishButtonClick !== undefined)
@@ -180,14 +184,14 @@ class ReactWizard extends React.Component {
       this.setState(
         {
           progressbarStyle: {
-            width: "100%"
+            width: "100%",
           },
           wizardData: {
             ...this.state.wizardData,
             [this.props.steps[this.state.currentStep].stepName]: this.refs[
               this.props.steps[this.state.currentStep].stepName
-            ].state
-          }
+            ].state,
+          },
         },
         () => {
           this.props.finishButtonClick(this.state.wizardData);
@@ -231,28 +235,29 @@ class ReactWizard extends React.Component {
       width: step_width,
       transform:
         "translate3d(" + move_distance + "px, " + vertical_level + "px, 0)",
-      transition: "all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)"
+      transition: "all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)",
     };
     this.setState({
       movingTabStyle: movingTabStyle,
       progressbarStyle: {
-        width: move_distance + step_width / 2
-      }
+        width: move_distance + step_width / 2,
+      },
     });
   }
 
   renderComponent(prop) {
     const { component, stepProps, stepName } = prop;
-    if (typeof component === 'function' || isForwardRefComponent(component)) {
+    if (typeof component === "function" || isForwardRefComponent(component)) {
       return (
         <prop.component
-            ref={stepName}
-            wizardData={this.state.wizardData}
-            {...stepProps}
-        />);
+          ref={stepName}
+          wizardData={this.state.wizardData}
+          {...stepProps}
+        />
+      );
     }
 
-    return (<div ref={stepName}>{component}</div>);
+    return <div ref={stepName}>{component}</div>;
   }
 
   render() {
@@ -290,8 +295,7 @@ class ReactWizard extends React.Component {
                         )}
                         onClick={() => this.navigationStepChange(key)}
                       >
-                        {prop.stepIcon !== undefined &&
-                        prop.stepIcon !== "" ? (
+                        {prop.stepIcon !== undefined && prop.stepIcon !== "" ? (
                           <i className={prop.stepIcon} />
                         ) : null}
                         {this.props.progressbar ? (
@@ -328,7 +332,7 @@ class ReactWizard extends React.Component {
                     tabId={key}
                     key={key}
                     className={classnames("fade", {
-                      show: this.state.currentStep === key
+                      show: this.state.currentStep === key,
                     })}
                   >
                     {this.renderComponent(prop)}
@@ -343,7 +347,7 @@ class ReactWizard extends React.Component {
                 <Button
                   className={classnames("btn-next", {
                     [this.props.nextButtonClasses]:
-                      this.props.nextButtonClasses !== undefined
+                      this.props.nextButtonClasses !== undefined,
                   })}
                   onClick={() => this.nextButtonClick()}
                 >
@@ -356,7 +360,7 @@ class ReactWizard extends React.Component {
                 <Button
                   className={classnames("btn-finish d-inline-block", {
                     [this.props.finishButtonClasses]:
-                      this.props.finishButtonClasses !== undefined
+                      this.props.finishButtonClasses !== undefined,
                   })}
                   onClick={() => this.finishButtonClick()}
                 >
@@ -367,11 +371,19 @@ class ReactWizard extends React.Component {
               ) : null}
             </div>
             <div style={{ float: "left" }}>
+              {this.props.showBackButton && this.state.currentStep === 0 ? (
+                <Button
+                  className={classnames("btn-previous")}
+                  onClick={() => this.props.backButtonClick()}
+                >
+                  Back
+                </Button>
+              ) : null}
               {this.state.previousButton ? (
                 <Button
                   className={classnames("btn-previous", {
                     [this.props.previousButtonClasses]:
-                      this.props.previousButtonClasses !== undefined
+                      this.props.previousButtonClasses !== undefined,
                   })}
                   onClick={() => this.previousButtonClick()}
                 >
@@ -395,7 +407,8 @@ ReactWizard.defaultProps = {
   finishButtonText: "Finish",
   nextButtonText: "Next",
   color: "primary",
-  progressbar: false
+  progressbar: false,
+  showBackButton: false,
 };
 
 ReactWizard.propTypes = {
@@ -417,14 +430,21 @@ ReactWizard.propTypes = {
     PropTypes.shape({
       stepName: PropTypes.string.isRequired,
       stepIcon: PropTypes.string,
-      component: PropTypes.oneOfType([PropTypes.func, function (props, key, componentName, location, propFullName) {
-        if (!isForwardRefComponent(props.component)) {
-          return new Error(`Invalid prop ${propFullName} supplied to ${componentName}. Validation failed.`);
-        }
-      }]),
-      stepProps: PropTypes.object
+      component: PropTypes.oneOfType([
+        PropTypes.func,
+        function (props, key, componentName, location, propFullName) {
+          if (!isForwardRefComponent(props.component)) {
+            return new Error(
+              `Invalid prop ${propFullName} supplied to ${componentName}. Validation failed.`
+            );
+          }
+        },
+      ]),
+      stepProps: PropTypes.object,
     })
-  ).isRequired
+  ).isRequired,
+  showBackButton: PropTypes.bool,
+  backButtonClick: PropTypes.func,
 };
 
 export default ReactWizard;

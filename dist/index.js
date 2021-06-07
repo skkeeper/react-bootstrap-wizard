@@ -17,7 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -43,14 +43,14 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var isForwardRefComponent = function isForwardRefComponent(component) {
-  return _typeof(component) === 'object' && component['$$typeof'] === Symbol["for"]('react.forward_ref');
+  return _typeof(component) === "object" && component["$$typeof"] === Symbol["for"]("react.forward_ref");
 };
 
 var ReactWizard = /*#__PURE__*/function (_React$Component) {
@@ -467,7 +467,7 @@ var ReactWizard = /*#__PURE__*/function (_React$Component) {
           stepProps = prop.stepProps,
           stepName = prop.stepName;
 
-      if (typeof component === 'function' || isForwardRefComponent(component)) {
+      if (typeof component === "function" || isForwardRefComponent(component)) {
         return /*#__PURE__*/_react["default"].createElement(prop.component, _extends({
           ref: stepName,
           wizardData: this.state.wizardData
@@ -558,7 +558,12 @@ var ReactWizard = /*#__PURE__*/function (_React$Component) {
         style: {
           "float": "left"
         }
-      }, this.state.previousButton ? /*#__PURE__*/_react["default"].createElement(_reactstrap.Button, {
+      }, this.props.showBackButton && this.state.currentStep === 0 ? /*#__PURE__*/_react["default"].createElement(_reactstrap.Button, {
+        className: (0, _classnames4["default"])("btn-previous"),
+        onClick: function onClick() {
+          return _this4.props.backButtonClick();
+        }
+      }, "Back") : null, this.state.previousButton ? /*#__PURE__*/_react["default"].createElement(_reactstrap.Button, {
         className: (0, _classnames4["default"])("btn-previous", _defineProperty({}, this.props.previousButtonClasses, this.props.previousButtonClasses !== undefined)),
         onClick: function onClick() {
           return _this4.previousButtonClick();
@@ -578,7 +583,8 @@ ReactWizard.defaultProps = {
   finishButtonText: "Finish",
   nextButtonText: "Next",
   color: "primary",
-  progressbar: false
+  progressbar: false,
+  showBackButton: false
 };
 ReactWizard.propTypes = {
   color: _propTypes["default"].oneOf(["primary", "green", "orange", "red", "blue"]),
@@ -604,7 +610,9 @@ ReactWizard.propTypes = {
       }
     }]),
     stepProps: _propTypes["default"].object
-  })).isRequired
+  })).isRequired,
+  showBackButton: _propTypes["default"].bool,
+  backButtonClick: _propTypes["default"].func
 };
 var _default = ReactWizard;
 exports["default"] = _default;
